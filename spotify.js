@@ -12,6 +12,7 @@ const opts = {
     platformName: 'Android',
     platformVersion: '10',
     deviceName,
+    // dumpsys window windows | grep -E 'Window #'
     appPackage: 'com.spotify.music',
     appActivity: 'com.spotify.music.MainActivity',
     automationName: 'UiAutomator2',

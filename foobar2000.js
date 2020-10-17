@@ -12,6 +12,7 @@ const opts = {
     platformName: 'Android',
     platformVersion: '10',
     deviceName,
+    // dumpsys window windows | grep -E 'Window #'
     appPackage: 'com.foobar2000.foobar2000',
     appActivity: 'com.foobar2000.foobar2000.MainActivity',
     automationName: 'UiAutomator2',
@@ -24,45 +25,45 @@ async function main() {
 
   // wait for app to start
   client.setImplicitTimeout(10000);
-  const nextButton1 = await client.findElement(
+  const { ELEMENT: nextButton1 } = await client.findElement(
     'xpath',
     "//android.widget.Button[@text='NEXT >>']"
   );
   client.setImplicitTimeout(1000);
 
   // click next button 1
-  await (await client.$(nextButton1)).click();
+  await client.elementClick(nextButton1);
 
   // click next button 2
-  const nextButton2 = await client.findElement(
+  const { ELEMENT: nextButton2 } = await client.findElement(
     'xpath',
     "//android.widget.Button[@text='NEXT >>']"
   );
-  await (await client.$(nextButton2)).click();
+  await client.elementClick(nextButton2);
 
   // wait for music to scan
   await new Promise((resolve) => setTimeout(resolve, 20000));
 
   // click next button 3
-  const nextButton3 = await client.findElement(
+  const { ELEMENT: nextButton3 } = await client.findElement(
     'xpath',
     "//android.widget.Button[@text='NEXT >>']"
   );
-  await (await client.$(nextButton3)).click();
+  await client.elementClick(nextButton3);
 
   // click finish button
-  const finishButton = await client.findElement(
+  const { ELEMENT: finishButton } = await client.findElement(
     'xpath',
     "//android.widget.Button[@text='FINISH >>']"
   );
-  await (await client.$(finishButton)).click();
+  await client.elementClick(finishButton);
 
   // click search button
-  const searchButton = await client.findElement(
-    'xpath',
-    "//android.widget.Button[@content-desc='Search']"
+  const { ELEMENT: searchButton } = await client.findElement(
+    'accessibility id',
+    'Search'
   );
-  await (await client.$(searchButton)).click();
+  await client.elementClick(searchButton);
 
   // wait for search field
   const searchInput = await client.$('android.widget.EditText');
