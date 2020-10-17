@@ -3,7 +3,7 @@ const assert = require('assert');
 const fs = require('fs');
 
 const deviceName = process.argv[2] || 'Android Simulator';
-const query = process.argv[3] || 'deconvolution';
+const query = process.argv[3] || 'Deconvolution';
 
 const opts = {
   path: '/wd/hub',
@@ -19,45 +19,94 @@ const opts = {
   },
 };
 
+const config = JSON.parse(fs.readFileSync('spotify-config.json'));
+
 async function main() {
   const client = await wdio.remote(opts);
 
-  // TODO: login
-
   // wait for app to start
   client.setImplicitTimeout(10000);
-  const searchButton = await client.findElement(
+  const { ELEMENT: selectLoginButton } = await client.findElement(
     'xpath',
-    "//android.widget.ImageView[@content-desc='Search']"
+    "//android.widget.Button[@text='Log in']"
+  );
+  client.setImplicitTimeout(1000);
+  if (!selectLoginButton) {
+    const pageSource = await client.getPageSource();
+    fs.writeFileSync('pagesource.xml', pageSource);
+  }
+
+  // click login button
+  await client.elementClick(selectLoginButton);
+
+  // enter user name
+  const { ELEMENT: usernameInput } = await client.findElement(
+    'id',
+    'com.spotify.music:id/username_text'
+  );
+  await client.elementSendKeys(usernameInput, config.email);
+
+  // enter password
+  const { ELEMENT: passwordInput } = await client.findElement(
+    'id',
+    'com.spotify.music:id/password_text'
+  );
+  await client.elementSendKeys(passwordInput, config.password);
+
+  // click login button
+  const { ELEMENT: loginButton } = await client.findElement(
+    'xpath',
+    "//android.widget.Button[@text='LOG IN']"
+  );
+  await client.elementClick(loginButton);
+
+  // wait for login
+  client.setImplicitTimeout(10000);
+  const { ELEMENT: linkAccountDismissButton } = await client.findElement(
+    'xpath',
+    "//android.widget.TextView[@text='DISMISS']"
   );
   client.setImplicitTimeout(1000);
 
+  // click dismiss button
+  await client.elementClick(linkAccountDismissButton);
+
   // click search button
-  client.touchClick(searchButton);
+  const { ELEMENT: searchButton } = await client.findElement(
+    'accessibility id',
+    'Search'
+    // 'xpath',
+    // "//android.widget.ImageView[@content-desc='Search']"
+  );
+  await client.elementClick(searchButton);
 
   // wait for search field
-  const searchInput = await client.findElement(
-    'xpath',
-    "//android.widget.TextView[@content-desc='Search for artists, songs, or podcasts']"
+  const { ELEMENT: searchSongsButton } = await client.findElement(
+    'accessibility id',
+    'Search for artists, songs, or podcasts'
   );
+  await client.elementClick(searchSongsButton);
 
   // type in search field
-  await searchInput.setValue(query);
+  const { ELEMENT: searchInput } = await client.findElement(
+    'accessibility id',
+    'Search query'
+  );
+  await client.elementSendKeys(searchInput, query);
 
-  // press enter
-  // client.pressKeyCode()
-  // ((AndroidDriver) driver).pressKey(new KeyEvent(AndroidKey.ENTER));
+  // click first search result
+  const [{ ELEMENT: songResult }] = await client.findElements(
+    'xpath',
+    `//android.widget.TextView[@text='${query}']`
+  );
+  await client.elementClick(songResult);
 
-  // TextView[@text="Song • Geodesium"]
-  // id: com.spotify.music:id/search_body
-  // android.widget.FrameLayout[0]
-  // wait for song result
-  // click song result
-
-  const screenshot = await client.takeScreenshot();
-  fs.writeFileSync('screenshot.png', new Buffer(screenshot, 'base64'));
+  await new Promise((resolve) => setTimeout(resolve, 10000));
   const pageSource = await client.getPageSource();
   fs.writeFileSync('pagesource.xml', pageSource);
+
+  await new Promise((resolve) => setTimeout(resolve, 60000));
+
   await client.deleteSession();
 }
 
