@@ -2,7 +2,7 @@ const wdio = require('webdriverio');
 const assert = require('assert');
 const fs = require('fs');
 
-const deviceName = process.argv[2];
+const deviceName = process.argv[2] || 'Android Simulator';
 
 const opts = {
   path: '/wd/hub',
@@ -11,8 +11,6 @@ const opts = {
     platformName: 'Android',
     platformVersion: '10',
     deviceName,
-    // app: "ApiDemos-debug.apk", // From http://appium.io/docs/en/about-appium/getting-started/
-    // appPackage: "io.appium.android.apis",
     appPackage: 'com.android.vending', // Goole Play Store
     appActivity: 'com.google.android.finsky.activities.MainActivity',
     automationName: 'UiAutomator2',
@@ -21,13 +19,6 @@ const opts = {
 
 async function main() {
   const client = await wdio.remote(opts);
-
-  // const field = await client.$("android.widget.EditText");
-  // await field.setValue("Hello World!");
-  // assert.equal(await field.getText(), "Hello World!");
-
-  // await field.setValue("Hello Lars!");
-  // assert.equal(await field.getText(), "Hello Lars!");
 
   client.setImplicitTimeout(10000);
   const searchField = await client.findElement(
