@@ -1,0 +1,26 @@
+{
+  "name": "appium-sandbox",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "appium": "appium",
+    "doctor": "appium-doctor --android"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larsthorup/appium-sandbox.git"
+  },
+  "keywords": [],
+  "author": "Lars Thorup <lars@zealake.com> (https://www.zealake.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/larsthorup/appium-sandbox/issues"
+  },
+  "homepage": "https://github.com/larsthorup/appium-sandbox#readme",
+  "dependencies": {
+    "appium": "^1.18.3",
+    "appium-doctor": "^1.15.3",
+    "webdriverio": "^6.6.6"
+  }
+}
