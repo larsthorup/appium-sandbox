@@ -24,4 +24,5 @@ node api-demo (deviceId)
 node google-play-store (deviceId)
 node foobar2000 (deviceId) (query)
 node spotify (deviceId) (query)
+node bluetooth (devicdId)
 ```

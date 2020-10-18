@@ -95,11 +95,13 @@ async function main() {
   await client.elementSendKeys(searchInput, query);
 
   // click first search result
+  client.setImplicitTimeout(10000);
   const [{ ELEMENT: songResult }] = await client.findElements(
     'xpath',
     `//android.widget.TextView[@text='${query}']`
   );
   await client.elementClick(songResult);
+  client.setImplicitTimeout(1000);
 
   await new Promise((resolve) => setTimeout(resolve, 10000));
   const pageSource = await client.getPageSource();
