@@ -22,6 +22,7 @@ const opts = {
 
 async function main() {
   const client = await wdio.remote(opts);
+  client.hideKeyboard();
 
   // wait for app to start
   client.setImplicitTimeout(10000);
@@ -85,7 +86,7 @@ async function main() {
   fs.writeFileSync('pagesource.xml', pageSource);
 
   // wait for music playing
-  await new Promise((resolve) => setTimeout(resolve, 60000));
+  await new Promise((resolve) => setTimeout(resolve, 10000));
 
   await client.deleteSession();
 }
